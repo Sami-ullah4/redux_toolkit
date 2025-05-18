@@ -6,4 +6,3 @@ export const fakeUserData = () => {
   return chance.name({ middle: true });
 };
 
-// console.log(fakeUserData()); 

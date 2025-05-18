@@ -1,12 +1,12 @@
 import React from 'react'
-import IncDec from './prctisTodo_s/IncDec'
-import TodoList from './prctisTodo_s/TodoList'
+
+import Github_Api from './pages/github/Github_Api'
 
 const App = () => {
   return (
 <>
-<TodoList/>
-<IncDec/>
+
+<Github_Api/>
 </>  )
 }
 

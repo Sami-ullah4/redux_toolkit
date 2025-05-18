@@ -1,8 +1,8 @@
 import React from "react";
 import "../app.css";
-import { fakeUserData } from "../api";
+import { fakeUserData } from "../../api";
 import { useDispatch, useSelector } from "react-redux";
-import { addUser, removeUser } from "../features/todo/UserSlice"; // ⬅️ import removeUser
+import { addUser, removeUser } from "../../features/todo/UserSlice"; // ⬅️ import removeUser
 
 const TodoList = () => {
   const userName = useSelector((state) => state.users);
