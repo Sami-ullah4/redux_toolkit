@@ -44,7 +44,7 @@ export const addMokUser = createAsyncThunk(
     }
   }
 );
-
+///delet req
 export const deleteUser = createAsyncThunk(
   "deletingUser",
   async (id, { rejectWithValue }) => {
@@ -62,6 +62,34 @@ export const deleteUser = createAsyncThunk(
       return id;
     } catch (error) {
       return rejectWithValue(error.message || "DELETE request failed");
+    }
+  }
+);
+///update req
+// id = user ID, updatedUser = data to update
+export const upDataUser = createAsyncThunk(
+  "upDataUser",
+  async ({ id, updatedUser }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `https://68273edc6b7628c5290f9f00.mockapi.io/CRUD/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedUser),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update user");
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message || "Update request failed");
     }
   }
 );
@@ -134,6 +162,28 @@ const userData = createSlice({
         state.isProductsRejected = true;
         state.error = action.payload;
       });
+      ////
+      builder
+          .addCase(upDataUser.pending, (state) => {
+        state.isProductsLoading = true;
+        state.error = null;
+      })
+     // Add this in extraReducers of your slice
+.addCase(upDataUser.fulfilled, (state, action) => {
+  state.isProductsLoading = false;
+  const index = state.products.findIndex((u) => u.id === action.payload.id);
+  if (index !== -1) {
+    state.products[index] = action.payload; // Update the user in the list
+  }
+})
+
+      .addCase(upDataUser.rejected, (state, action) => {
+        state.isProductsLoading = false;
+        state.isProducts = false;
+        state.isProductsRejected = true;
+        state.error = action.payload;
+      });
+      
   },
 });
 

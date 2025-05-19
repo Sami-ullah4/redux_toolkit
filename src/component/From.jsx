@@ -1,17 +1,9 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { addMokUser } from "../features/crudOperation";
+import { addMokUser, upDataUser } from "../features/crudOperation"; // ✅ fixed
 
-const Form = ({setUser , user}) => {
-    const dispatch = useDispatch();
-
-//   const [user, setUser] = useState({
-//     name: "",
-//     email: "",
-//     age: "",
-//     gender: "",
-//     id: Date.now(), 
-//   });
+const Form = ({ setUser, user, setIsEditing, isEditing }) => {
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,9 +15,28 @@ const Form = ({setUser , user}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted User:", user);
-    // You can now dispatch an action or post this data
-    dispatch(addMokUser(user))
+
+    if (isEditing) {
+      dispatch(upDataUser({ id: user.id, updatedUser: user })).then(() => { // ✅ fixed
+        setIsEditing(false);
+        setUser({
+          name: "",
+          email: "",
+          age: "",
+          gender: "",
+          id: Date.now(),
+        });
+      });
+    } else {
+      dispatch(addMokUser(user));
+      setUser({
+        name: "",
+        email: "",
+        age: "",
+        gender: "",
+        id: Date.now(),
+      });
+    }
   };
 
   return (
@@ -77,7 +88,7 @@ const Form = ({setUser , user}) => {
         type="submit"
         className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
       >
-        Submit
+        {isEditing ? "Update" : "Submit"}
       </button>
     </form>
   );
