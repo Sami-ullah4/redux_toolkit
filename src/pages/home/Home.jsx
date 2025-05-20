@@ -23,7 +23,7 @@ const Home = () => {
     dispatch(searchUser(serch));
   }, [serch, dispatch]);
 
-  const { products, isProductsLoading, searchData } = useSelector(
+  const { products, searchData , isProductsLoading} = useSelector(
     (state) => state.products
   );
 
@@ -42,12 +42,11 @@ const Home = () => {
     setIsEditing(true);
   };
 
-  if (isProductsLoading) {
-    return <h1>Loading...</h1>;
-  }
+  
 
   return (
     <>
+    {isProductsLoading && <h1>loading...</h1>}
       <div className="m-auto">
         <input
           type="text"
@@ -72,10 +71,7 @@ const Home = () => {
           onChange={(e) => SetRadioCheck(e.target.value)}
         />
         <label htmlFor="">All</label>
-        <input
-          type="radio"
-          onChange={(e) => SetRadioCheck(e.target.value)}
-        />
+        <input type="radio" onChange={(e) => SetRadioCheck(e.target.value)} />
       </div>
 
       {(showFron || isEditing) && (

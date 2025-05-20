@@ -1,12 +1,12 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addMokUser, upDataUser } from "../features/crudOperation";
 import { toast } from "react-toastify";
 
-
 const Form = ({ setUser, user, setIsEditing, isEditing }) => {
   const dispatch = useDispatch();
-
+  const { isProductsLoading } = useSelector((state) => state.products);
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prev) => ({
@@ -17,6 +17,8 @@ const Form = ({ setUser, user, setIsEditing, isEditing }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    
     if (
       !user.name.trim() ||
       !user.email.trim() ||
@@ -28,7 +30,7 @@ const Form = ({ setUser, user, setIsEditing, isEditing }) => {
     }
 
     if (isEditing) {
-      dispatch(upDataUser({ id: user.id, updatedUser: user })).then(() => {
+      dispatch(upDataUser({ id: user.id })).then(() => {
         setIsEditing(false);
         setUser({
           name: "",
@@ -37,6 +39,7 @@ const Form = ({ setUser, user, setIsEditing, isEditing }) => {
           gender: "",
           id: Date.now(),
         });
+    
       });
     } else {
       dispatch(addMokUser(user));
@@ -51,10 +54,12 @@ const Form = ({ setUser, user, setIsEditing, isEditing }) => {
   };
 
   return (
+    <>
     <form
       onSubmit={handleSubmit}
       className="flex flex-col gap-4 max-w-md mx-auto mt-10 p-4 border rounded shadow"
-    >
+      >
+      {/* {isProductsLoading && <h1>loading...</h1> } */}
       <h1 className="text-2xl font-bold text-center">Register Here</h1>
 
       <input
@@ -102,6 +107,7 @@ const Form = ({ setUser, user, setIsEditing, isEditing }) => {
         {isEditing ? "Update" : "Submit"}
       </button>
     </form>
+    </>
   );
 };
 
