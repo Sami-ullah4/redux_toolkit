@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 // GET users
 export const getUsers = createAsyncThunk(
@@ -99,12 +100,17 @@ const userData = createSlice({
   name: "products",
   initialState: {
     products: [],
+    searchData: [],
     isProductsLoading: false,
     isProductsRejected: false,
     isProducts: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    searchUser:(state,action)=>{
+state.searchData = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     // GET users
     builder
@@ -134,6 +140,7 @@ const userData = createSlice({
         state.isProductsLoading = false;
         state.isProducts = true;
         state.products.push(action.payload);
+          toast.success("User added successfully ✅");
       })
       .addCase(addMokUser.rejected, (state, action) => {
         state.isProductsLoading = false;
@@ -153,6 +160,7 @@ const userData = createSlice({
         const id = action.payload;
         if (id) {
           state.products = state.products.filter((user) => user.id !== id);
+          toast.success("User deleted successfully ✅");
         }
       })
 
@@ -162,29 +170,32 @@ const userData = createSlice({
         state.isProductsRejected = true;
         state.error = action.payload;
       });
-      ////
-      builder
-          .addCase(upDataUser.pending, (state) => {
-        state.isProductsLoading = true;
-        state.error = null;
-      })
-     // Add this in extraReducers of your slice
+    ////update request
+    builder
+     .addCase(upDataUser.pending, (state) => {
+  state.isProductsLoading = true;
+  state.error = null;
+})
 .addCase(upDataUser.fulfilled, (state, action) => {
   state.isProductsLoading = false;
-  const index = state.products.findIndex((u) => u.id === action.payload.id);
+  const index = state.products.findIndex(
+    (u) => String(u.id) === String(action.payload.id)
+  );
   if (index !== -1) {
-    state.products[index] = action.payload; // Update the user in the list
+    state.products[index] = action.payload;
+    console.log(state.payload)
+    toast.success("User updated successfully ✅");
   }
 })
+.addCase(upDataUser.rejected, (state, action) => {
+  state.isProductsLoading = false;
+  state.isProducts = false;
+  state.isProductsRejected = true;
+  state.error = action.payload;
+});
 
-      .addCase(upDataUser.rejected, (state, action) => {
-        state.isProductsLoading = false;
-        state.isProducts = false;
-        state.isProductsRejected = true;
-        state.error = action.payload;
-      });
-      
   },
 });
 
 export default userData.reducer;
+export const {searchUser} = userData.actions;

@@ -1,6 +1,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { addMokUser, upDataUser } from "../features/crudOperation"; // ✅ fixed
+import { addMokUser, upDataUser } from "../features/crudOperation";
+import { toast } from "react-toastify";
+
 
 const Form = ({ setUser, user, setIsEditing, isEditing }) => {
   const dispatch = useDispatch();
@@ -15,9 +17,18 @@ const Form = ({ setUser, user, setIsEditing, isEditing }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (
+      !user.name.trim() ||
+      !user.email.trim() ||
+      !user.age.toString().trim() ||
+      !user.gender.trim()
+    ) {
+      toast.error("Please fill in all fields before submitting.");
+      return;
+    }
 
     if (isEditing) {
-      dispatch(upDataUser({ id: user.id, updatedUser: user })).then(() => { // ✅ fixed
+      dispatch(upDataUser({ id: user.id, updatedUser: user })).then(() => {
         setIsEditing(false);
         setUser({
           name: "",
